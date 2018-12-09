@@ -8,6 +8,19 @@ class ChooseLanguage extends StatefulWidget {
 }
 
 class _ChooseLanguageState extends State<ChooseLanguage> {
+
+  String _firstLanguage = "English";
+  String _secondLanguage = "French";
+
+  void _switchLanguage() {
+    String _tmpLanguage = this._firstLanguage;
+
+    setState(() {
+      this._firstLanguage = this._secondLanguage;
+      this._secondLanguage = _tmpLanguage;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,7 +47,7 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
                   onTap: () {},
                   child: Center(
                     child: Text(
-                      "English",
+                      this._firstLanguage,
                       style: TextStyle(
                         color: Colors.blue[600],
                         fontSize: 15.0,
@@ -51,7 +64,7 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
                   Icons.compare_arrows,
                   color: Colors.grey[700],
                 ),
-                onPressed: () {},
+                onPressed: this._switchLanguage,
               ),
             ),
             Expanded(
@@ -61,7 +74,7 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
                   onTap: () {},
                   child: Center(
                     child: Text(
-                      "French",
+                      this._secondLanguage,
                       style: TextStyle(
                         color: Colors.blue[600],
                         fontSize: 15.0,
