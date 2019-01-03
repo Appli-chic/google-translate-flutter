@@ -34,58 +34,56 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
           ),
         ),
       ),
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: Material(
-                color: Colors.white,
-                child: InkWell(
-                  onTap: () {},
-                  child: Center(
-                    child: Text(
-                      this._firstLanguage,
-                      style: TextStyle(
-                        color: Colors.blue[600],
-                        fontSize: 15.0,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Material(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: Material(
               color: Colors.white,
-              child: IconButton(
-                icon: Icon(
-                  Icons.compare_arrows,
-                  color: Colors.grey[700],
-                ),
-                onPressed: this._switchLanguage,
-              ),
-            ),
-            Expanded(
-              child: Material(
-                color: Colors.white,
-                child: InkWell(
-                  onTap: () {},
-                  child: Center(
-                    child: Text(
-                      this._secondLanguage,
-                      style: TextStyle(
-                        color: Colors.blue[600],
-                        fontSize: 15.0,
-                      ),
+              child: InkWell(
+                onTap: () {},
+                child: Center(
+                  child: Text(
+                    this._firstLanguage,
+                    style: TextStyle(
+                      color: Colors.blue[600],
+                      fontSize: 15.0,
                     ),
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+          Material(
+            color: Colors.white,
+            child: IconButton(
+              icon: Icon(
+                Icons.compare_arrows,
+                color: Colors.grey[700],
+              ),
+              onPressed: () {},
+//              onPressed: this._switchLanguage,
+            ),
+          ),
+          Expanded(
+            child: Material(
+              color: Colors.white,
+              child: InkWell(
+                onTap: () {},
+                child: Center(
+                  child: Text(
+                    this._secondLanguage,
+                    style: TextStyle(
+                      color: Colors.blue[600],
+                      fontSize: 15.0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

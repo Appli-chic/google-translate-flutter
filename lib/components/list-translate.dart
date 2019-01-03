@@ -66,44 +66,41 @@ class _ListTranslateState extends State<ListTranslate> {
             child: Container(
               height: 80.0,
               padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 16.0),
-              child: Directionality(
-                textDirection: TextDirection.ltr,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Text(
-                            items[Index].word,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                            ),
-                            maxLines: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Text(
+                          items[Index].word,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
                           ),
-                          Text(
-                            items[Index].translated,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                        Text(
+                          items[Index].translated,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
                           ),
-                        ],
-                      ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        items[Index].isStarred ? Icons.star : Icons.star_border,
-                        size: 23.0,
-                        color: items[Index].isStarred ? Colors.blue[600] : Colors.grey[700],
-                      ),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      items[Index].isStarred ? Icons.star : Icons.star_border,
+                      size: 23.0,
+                      color: items[Index].isStarred ? Colors.blue[600] : Colors.grey[700],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );
