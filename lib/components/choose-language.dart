@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../screens/language-page.dart';
+
 class ChooseLanguage extends StatefulWidget {
   ChooseLanguage({Key key}) : super(key: key);
 
@@ -8,7 +10,6 @@ class ChooseLanguage extends StatefulWidget {
 }
 
 class _ChooseLanguageState extends State<ChooseLanguage> {
-
   String _firstLanguage = "English";
   String _secondLanguage = "French";
 
@@ -19,6 +20,17 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
       this._firstLanguage = this._secondLanguage;
       this._secondLanguage = _tmpLanguage;
     });
+  }
+
+  void _chooseFirstLanguage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LanguagePage(
+              title: "Translate from",
+            ),
+      ),
+    );
   }
 
   @override
@@ -42,7 +54,7 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
             child: Material(
               color: Colors.white,
               child: InkWell(
-                onTap: () {},
+                onTap: this._chooseFirstLanguage,
                 child: Center(
                   child: Text(
                     this._firstLanguage,
@@ -62,8 +74,7 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
                 Icons.compare_arrows,
                 color: Colors.grey[700],
               ),
-              onPressed: () {},
-//              onPressed: this._switchLanguage,
+              onPressed: this._switchLanguage,
             ),
           ),
           Expanded(
