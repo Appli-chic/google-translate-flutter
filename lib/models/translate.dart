@@ -1,11 +1,11 @@
 class Translate {
-  String word;
-  String translated;
+  String text;
+  String translatedText;
   bool isStarred;
 
-  Translate(String word, String translated, bool isStarred) {
-    this.word = word;
-    this.translated = translated;
+  Translate(String text, String translated, bool isStarred) {
+    this.text = text;
+    this.translatedText = translated;
     this.isStarred = isStarred;
   }
 }
