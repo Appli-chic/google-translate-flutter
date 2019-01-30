@@ -22,12 +22,12 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
     });
   }
 
-  void _chooseFirstLanguage() {
+  void _chooseFirstLanguage(String title) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => LanguagePage(
-              title: "Translate from",
+              title: title,
             ),
       ),
     );
@@ -54,7 +54,9 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
             child: Material(
               color: Colors.white,
               child: InkWell(
-                onTap: this._chooseFirstLanguage,
+                onTap: () {
+                  this._chooseFirstLanguage("Translate from");
+                },
                 child: Center(
                   child: Text(
                     this._firstLanguage,
@@ -81,7 +83,9 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
             child: Material(
               color: Colors.white,
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  this._chooseFirstLanguage("Translate to");
+                },
                 child: Center(
                   child: Text(
                     this._secondLanguage,
