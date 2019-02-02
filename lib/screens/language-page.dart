@@ -5,9 +5,11 @@ import '../models/language.dart';
 import '../components/language-list-element.dart';
 
 class LanguagePage extends StatefulWidget {
-  LanguagePage({Key key, this.title}) : super(key: key);
+  LanguagePage({Key key, this.title, this.isAutomaticEnabled})
+      : super(key: key);
 
   final String title;
+  final bool isAutomaticEnabled;
 
   @override
   _LanguagePageState createState() => _LanguagePageState();
@@ -123,6 +125,20 @@ class _LanguagePageState extends State<LanguagePage> {
     Language('zu', 'Zulu', false, false, false),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+
+    // Remove the automatic element if disabled
+    if (!this.widget.isAutomaticEnabled) {
+      var automaticElement = this
+          ._languageList
+          .where((language) => language.code == 'auto')
+          .toList()[0];
+      this._languageList.remove(automaticElement);
+    }
+  }
+
   // Display the delete text icon if we typed text in the search input
   Widget _displayDeleteTextIcon() {
     if (this._searchTextController.text.length > 0) {
@@ -138,6 +154,13 @@ class _LanguagePageState extends State<LanguagePage> {
     } else {
       return null;
     }
+  }
+
+  // Search languages in the list
+  _searchLanguage(String text) {
+
+
+    setState(() {});
   }
 
   @override
@@ -161,15 +184,12 @@ class _LanguagePageState extends State<LanguagePage> {
             ),
             child: TextField(
               controller: this._searchTextController,
-              onChanged: (text) {
-                setState(() {});
-              },
+              onChanged: this._searchLanguage,
               decoration: InputDecoration(
                 hintText: "Search",
                 border: InputBorder.none,
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue[600])
-                ),
+                    borderSide: BorderSide(color: Colors.blue[600])),
                 prefixIcon: Icon(
                   Icons.search,
                   size: 24.0,
