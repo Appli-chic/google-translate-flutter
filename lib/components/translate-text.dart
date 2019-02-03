@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'action-button.dart';
 
 class TranslateText extends StatefulWidget {
-  TranslateText({Key key}) : super(key: key);
+  TranslateText({Key key, this.onTextTouched}) : super(key: key);
+
+  final Function(bool) onTextTouched;
 
   @override
   _TranslateTextState createState() => _TranslateTextState();
 }
 
 class _TranslateTextState extends State<TranslateText> {
+
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -24,7 +28,9 @@ class _TranslateTextState extends State<TranslateText> {
           children: <Widget>[
             Expanded(
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  this.widget.onTextTouched(true);
+                },
                 child: Container(
                   width: double.infinity,
                   padding:

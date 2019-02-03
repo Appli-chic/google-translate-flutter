@@ -119,13 +119,11 @@ class _ListTranslateState extends State<ListTranslate> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: _items.length,
-        itemBuilder: (BuildContext ctxt, int index) {
-          return _displayCard(index);
-        },
-      ),
+    return ListView.builder(
+      itemCount: _items.length,
+      itemBuilder: (BuildContext ctxt, int index) {
+        return _displayCard(index);
+      },
     );
   }
 }
