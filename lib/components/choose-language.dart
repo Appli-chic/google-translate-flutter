@@ -13,6 +13,7 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
   String _firstLanguage = "English";
   String _secondLanguage = "French";
 
+  // Switch the first and the second language
   void _switchLanguage() {
     String _tmpLanguage = this._firstLanguage;
 
@@ -22,8 +23,9 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
     });
   }
 
-  void _chooseFirstLanguage(String title, bool isAutomaticEnabled) {
-    Navigator.push(
+  // Choose a new first language
+  void _chooseFirstLanguage(String title, bool isAutomaticEnabled) async {
+    final language = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => LanguagePage(
@@ -32,6 +34,31 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
             ),
       ),
     );
+
+    if(language != null) {
+      this.setState(() {
+        this._firstLanguage = language;
+      });
+    }
+  }
+
+  // Choose a new second language
+  void _chooseSecondLanguage(String title, bool isAutomaticEnabled) async {
+    final language = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LanguagePage(
+          title: title,
+          isAutomaticEnabled: isAutomaticEnabled,
+        ),
+      ),
+    );
+
+    if(language != null) {
+      this.setState(() {
+        this._secondLanguage = language;
+      });
+    }
   }
 
   @override
@@ -85,7 +112,7 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
               color: Colors.white,
               child: InkWell(
                 onTap: () {
-                  this._chooseFirstLanguage("Translate to", false);
+                  this._chooseSecondLanguage("Translate to", false);
                 },
                 child: Center(
                   child: Text(

@@ -139,6 +139,11 @@ class _LanguagePageState extends State<LanguagePage> {
     }
   }
 
+  // Send back the selected language
+  _sendBackLanguage(String language) {
+    Navigator.pop(context, language);
+  }
+
   // Display the delete text icon if we typed text in the search input
   Widget _displayDeleteTextIcon() {
     if (this._searchTextController.text.length > 0) {
@@ -156,18 +161,105 @@ class _LanguagePageState extends State<LanguagePage> {
     }
   }
 
-  // Search languages in the list
-  _searchLanguage(String text) {
+  // Display the list with header if we are not searching
+  // Display the list with only languages if we are searching
+  Widget _displayTheRightList() {
+    if (this._searchTextController.text == "") {
+      return this._displayListWithHeaders();
+    } else {
+      return this._displaySearchedList();
+    }
+  }
 
+  // Display the language list filtered
+  Widget _displaySearchedList() {
+    List<Language> searchedList = this
+        ._languageList
+        .where((e) => e.name
+            .toLowerCase()
+            .contains(this._searchTextController.text.toLowerCase()))
+        .toList();
 
-    setState(() {});
+    // Display
+    return Expanded(
+      child: ListView.builder(
+        itemCount: searchedList.length,
+        itemBuilder: (BuildContext ctxt, int index) {
+          return LanguageListElement(
+            language: searchedList[index],
+            onSelect: this._sendBackLanguage,
+          );
+        },
+      ),
+    );
+  }
+
+  // Display the list with headers, means we are not searching
+  Widget _displayListWithHeaders() {
+    List<Language> recentLanguages =
+        this._languageList.where((e) => e.isRecent).toList();
+
+    // Render
+    return Expanded(
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverStickyHeader(
+            header: Container(
+              height: 60.0,
+              color: Colors.blue[600],
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Recent Languages',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, i) => LanguageListElement(
+                      language: recentLanguages[i],
+                      onSelect: this._sendBackLanguage,
+                    ),
+                childCount: recentLanguages.length,
+              ),
+            ),
+          ),
+          SliverStickyHeader(
+            header: Container(
+              height: 60.0,
+              color: Colors.blue[600],
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'All languages',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, i) => LanguageListElement(
+                      language: this._languageList[i],
+                      onSelect: this._sendBackLanguage,
+                    ),
+                childCount: this._languageList.length,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Language> recentLanguages =
-        this._languageList.where((e) => e.isRecent).toList();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(this.widget.title),
@@ -184,7 +276,9 @@ class _LanguagePageState extends State<LanguagePage> {
             ),
             child: TextField(
               controller: this._searchTextController,
-              onChanged: this._searchLanguage,
+              onChanged: (text) {
+                setState(() {});
+              },
               decoration: InputDecoration(
                 hintText: "Search",
                 border: InputBorder.none,
@@ -199,60 +293,7 @@ class _LanguagePageState extends State<LanguagePage> {
               ),
             ),
           ),
-          Expanded(
-            child: CustomScrollView(
-              slivers: <Widget>[
-                SliverStickyHeader(
-                  header: Container(
-                    height: 60.0,
-                    color: Colors.blue[600],
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Recent Languages',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, i) => LanguageListElement(
-                            language: recentLanguages[i],
-                          ),
-                      childCount: recentLanguages.length,
-                    ),
-                  ),
-                ),
-                SliverStickyHeader(
-                  header: Container(
-                    height: 60.0,
-                    color: Colors.blue[600],
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'All languages',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, i) => LanguageListElement(
-                            language: this._languageList[i],
-                          ),
-                      childCount: this._languageList.length,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          this._displayTheRightList(),
         ],
       ),
     );
