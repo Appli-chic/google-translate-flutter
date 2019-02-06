@@ -140,7 +140,7 @@ class _LanguagePageState extends State<LanguagePage> {
   }
 
   // Send back the selected language
-  _sendBackLanguage(String language) {
+  _sendBackLanguage(Language language) {
     Navigator.pop(context, language);
   }
 

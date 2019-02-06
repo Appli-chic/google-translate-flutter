@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:translator/translator.dart';
 
+import '../models/language.dart';
+
 class TranslateInput extends StatefulWidget {
   TranslateInput(
       {Key key,
@@ -12,8 +14,8 @@ class TranslateInput extends StatefulWidget {
 
   final Function(bool) onCloseClicked;
   final FocusNode focusNode;
-  final String firstLanguage;
-  final String secondLanguage;
+  final Language firstLanguage;
+  final Language secondLanguage;
 
   @override
   _TranslateInputState createState() => _TranslateInputState();
@@ -25,8 +27,12 @@ class _TranslateInputState extends State<TranslateInput> {
   GoogleTranslator _translator = new GoogleTranslator();
 
   _onTextChanged(String text) {
-    if(text != "") {
-      _translator.translate(text, from: 'en', to: 'fr').then((translatedText) {
+    if (text != "") {
+      _translator
+          .translate(text,
+              from: this.widget.firstLanguage.code,
+              to: this.widget.secondLanguage.code)
+          .then((translatedText) {
         this.setState(() {
           this._textTranslated = translatedText;
         });
@@ -79,10 +85,13 @@ class _TranslateInputState extends State<TranslateInput> {
           Divider(),
           Expanded(
             child: Container(
-              margin: EdgeInsets.only(left: 16.0, top: 16.0),
-              child: Text(
-                this._textTranslated,
-                style: TextStyle(color: Colors.blue[700]),
+              margin: EdgeInsets.only(left: 16.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  this._textTranslated,
+                  style: TextStyle(color: Colors.blue[700]),
+                ),
               ),
             ),
           ),

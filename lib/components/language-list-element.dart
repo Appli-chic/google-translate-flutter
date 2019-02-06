@@ -7,7 +7,7 @@ class LanguageListElement extends StatefulWidget {
       : super(key: key);
 
   final Language language;
-  final Function(String) onSelect;
+  final Function(Language) onSelect;
 
   @override
   _LanguageListElementState createState() => _LanguageListElementState();
@@ -33,7 +33,7 @@ class _LanguageListElementState extends State<LanguageListElement> {
       title: Text(this.widget.language.name),
       trailing: this._displayTrailingIcon(),
       onTap: () {
-        this.widget.onSelect(this.widget.language.name);
+        this.widget.onSelect(this.widget.language);
       },
     );
   }

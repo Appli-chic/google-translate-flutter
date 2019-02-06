@@ -4,6 +4,7 @@ import '../components/choose-language.dart';
 import '../components/translate-text.dart';
 import '../components/list-translate.dart';
 import '../components/translate-input.dart';
+import '../models/language.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -17,8 +18,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   bool _isTextTouched = false;
-  String _firstLanguage = "English";
-  String _secondLanguage = "French";
+  Language _firstLanguage = Language('en', 'English', true, true, true);
+  Language _secondLanguage = Language('fr', 'French', true, true, true);
   FocusNode _textFocusNode = FocusNode();
   AnimationController _controller;
   Animation _animation;
@@ -40,6 +41,13 @@ class _HomePageState extends State<HomePage>
     this._controller.dispose();
     this._textFocusNode.dispose();
     super.dispose();
+  }
+
+  _onLanguageChanged(Language firstCode, Language secondCode) {
+    this.setState(() {
+      this._firstLanguage = firstCode;
+      this._secondLanguage = secondCode;
+    });
   }
 
   // Generate animations to enter the text to translate
@@ -88,7 +96,9 @@ class _HomePageState extends State<HomePage>
       ),
       body: Column(
         children: <Widget>[
-          ChooseLanguage(),
+          ChooseLanguage(
+            onLanguageChanged: this._onLanguageChanged,
+          ),
           Stack(
             children: <Widget>[
               Offstage(
