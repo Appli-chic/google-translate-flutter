@@ -40,7 +40,7 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
       ),
     );
 
-    if(language != null) {
+    if (language != null) {
       this.setState(() {
         this._firstLanguage = language;
       });
@@ -55,13 +55,13 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
       context,
       MaterialPageRoute(
         builder: (context) => LanguagePage(
-          title: title,
-          isAutomaticEnabled: isAutomaticEnabled,
-        ),
+              title: title,
+              isAutomaticEnabled: isAutomaticEnabled,
+            ),
       ),
     );
 
-    if(language != null) {
+    if (language != null) {
       this.setState(() {
         this._secondLanguage = language;
       });
