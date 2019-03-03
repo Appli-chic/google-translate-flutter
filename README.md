@@ -1,7 +1,7 @@
-# Google Translate part 1
+# Google Translate part 2
 
-Flutter google translate part 1
+Flutter google translate part 2
 
 ## Medium article
 
-https://medium.com/@applichic/flutter-google-translate-part-1-63b50c93d873
+https://medium.com/@applichic/flutter-google-translate-part-2-3374ecdb8aa0
