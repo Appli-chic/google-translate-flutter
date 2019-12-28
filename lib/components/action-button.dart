@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 class ActionButton extends StatefulWidget {
-  ActionButton({Key key, this.icon, this.text, this.imageIcon})
+  ActionButton({Key key, this.icon, this.text, this.imageIcon, this.onClick})
       : super(key: key);
 
   final IconData icon;
   final AssetImage imageIcon;
   final String text;
+  final Function onClick;
 
   @override
   _ActionButtonState createState() => _ActionButtonState();
@@ -43,7 +44,9 @@ class _ActionButtonState extends State<ActionButton> {
           top: 2.0,
           bottom: 2.0,
         ),
-        onPressed: () {},
+        onPressed: () {
+          widget.onClick();
+        },
         child: Column(
           children: <Widget>[
             _displayIcon(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_translate/screens/record_page.dart';
 
 import 'action-button.dart';
 
@@ -12,8 +13,6 @@ class TranslateText extends StatefulWidget {
 }
 
 class _TranslateTextState extends State<TranslateText> {
-
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -33,8 +32,7 @@ class _TranslateTextState extends State<TranslateText> {
                 },
                 child: Container(
                   width: double.infinity,
-                  padding:
-                  EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
                   child: Text(
                     "Enter text",
                     style: TextStyle(
@@ -60,6 +58,14 @@ class _TranslateTextState extends State<TranslateText> {
                   text: "Conversation",
                 ),
                 ActionButton(
+                  onClick: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RecordPage(),
+                      ),
+                    );
+                  },
                   icon: Icons.keyboard_voice,
                   text: "Voice",
                 ),
