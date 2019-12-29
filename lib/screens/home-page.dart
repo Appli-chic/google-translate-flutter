@@ -105,6 +105,8 @@ class _HomePageState extends State<HomePage>
                 offstage: this._isTextTouched,
                 child: TranslateText(
                   onTextTouched: this._onTextTouched,
+                  firstLanguage: _firstLanguage,
+                  secondLanguage: _secondLanguage,
                 ),
               ),
               Offstage(

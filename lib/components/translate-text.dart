@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:google_translate/models/language.dart';
 import 'package:google_translate/screens/record_page.dart';
 
 import 'action-button.dart';
 
 class TranslateText extends StatefulWidget {
-  TranslateText({Key key, this.onTextTouched}) : super(key: key);
+  TranslateText({
+    Key key,
+    this.onTextTouched,
+    @required this.firstLanguage,
+    @required this.secondLanguage,
+  }) : super(key: key);
 
   final Function(bool) onTextTouched;
+  final Language firstLanguage;
+  final Language secondLanguage;
 
   @override
   _TranslateTextState createState() => _TranslateTextState();
@@ -59,12 +67,20 @@ class _TranslateTextState extends State<TranslateText> {
                 ),
                 ActionButton(
                   onClick: () async {
-                    await Navigator.push(
+                    var result = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RecordPage(),
+                        builder: (context) =>
+                            RecordPage(
+                              firstLanguage: widget.firstLanguage,
+                              secondLanguage: widget.secondLanguage,
+                            ),
                       ),
                     );
+
+                    if(result != null && result != "") {
+                      // TODO: Write the text
+                    }
                   },
                   icon: Icons.keyboard_voice,
                   text: "Voice",
