@@ -1,31 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:google_translate/providers/translate_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../models/language.dart';
 import '../screens/language-page.dart';
 
 class ChooseLanguage extends StatefulWidget {
-  ChooseLanguage({Key key, this.onLanguageChanged}) : super(key: key);
-
-  final Function(Language firstCode, Language secondCode) onLanguageChanged;
+  ChooseLanguage({Key key}) : super(key: key);
 
   @override
   _ChooseLanguageState createState() => _ChooseLanguageState();
 }
 
 class _ChooseLanguageState extends State<ChooseLanguage> {
-  Language _firstLanguage = Language('en', 'English', true, true, true);
-  Language _secondLanguage = Language('fr', 'French', true, true, true);
+  TranslateProvider _translateProvider;
 
   // Switch the first and the second language
   void _switchLanguage() {
-    Language _tmpLanguage = this._firstLanguage;
-
-    setState(() {
-      this._firstLanguage = this._secondLanguage;
-      this._secondLanguage = _tmpLanguage;
-    });
-
-    this.widget.onLanguageChanged(this._firstLanguage, this._secondLanguage);
+    _translateProvider.changeLanguages(_translateProvider.secondLanguage, _translateProvider.firstLanguage);
   }
 
   // Choose a new first language
@@ -41,11 +33,7 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
     );
 
     if (language != null) {
-      this.setState(() {
-        this._firstLanguage = language;
-      });
-
-      this.widget.onLanguageChanged(this._firstLanguage, this._secondLanguage);
+      _translateProvider.changeLanguages(language, _translateProvider.secondLanguage);
     }
   }
 
@@ -62,16 +50,16 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
     );
 
     if (language != null) {
-      this.setState(() {
-        this._secondLanguage = language;
-      });
-
-      this.widget.onLanguageChanged(this._firstLanguage, this._secondLanguage);
+      if (language != null) {
+        _translateProvider.changeLanguages(_translateProvider.firstLanguage, language);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    _translateProvider = Provider.of<TranslateProvider>(context, listen: true);
+
     return Container(
       height: 55.0,
       decoration: BoxDecoration(
@@ -96,7 +84,7 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
                 },
                 child: Center(
                   child: Text(
-                    this._firstLanguage.name,
+                    _translateProvider.firstLanguage.name,
                     style: TextStyle(
                       color: Colors.blue[600],
                       fontSize: 15.0,
@@ -125,7 +113,7 @@ class _ChooseLanguageState extends State<ChooseLanguage> {
                 },
                 child: Center(
                   child: Text(
-                    this._secondLanguage.name,
+                    _translateProvider.secondLanguage.name,
                     style: TextStyle(
                       color: Colors.blue[600],
                       fontSize: 15.0,

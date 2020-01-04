@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_translate/models/language.dart';
+import 'package:google_translate/providers/translate_provider.dart';
 import 'package:google_translate/screens/record_page.dart';
+import 'package:provider/provider.dart';
 
 import 'action-button.dart';
 
@@ -8,21 +9,21 @@ class TranslateText extends StatefulWidget {
   TranslateText({
     Key key,
     this.onTextTouched,
-    @required this.firstLanguage,
-    @required this.secondLanguage,
   }) : super(key: key);
 
   final Function(bool) onTextTouched;
-  final Language firstLanguage;
-  final Language secondLanguage;
 
   @override
   _TranslateTextState createState() => _TranslateTextState();
 }
 
 class _TranslateTextState extends State<TranslateText> {
+  TranslateProvider _translateProvider;
+
   @override
   Widget build(BuildContext context) {
+    _translateProvider = Provider.of<TranslateProvider>(context, listen: true);
+
     return Card(
       color: Colors.white,
       margin: EdgeInsets.all(0.0),
@@ -72,14 +73,15 @@ class _TranslateTextState extends State<TranslateText> {
                       MaterialPageRoute(
                         builder: (context) =>
                             RecordPage(
-                              firstLanguage: widget.firstLanguage,
-                              secondLanguage: widget.secondLanguage,
+                              firstLanguage: _translateProvider.firstLanguage,
+                              secondLanguage: _translateProvider.secondLanguage,
                             ),
                       ),
                     );
 
                     if(result != null && result != "") {
-                      // TODO: Write the text
+                      _translateProvider.setTextToTranslate(result);
+                      _translateProvider.setIsTranslating(true);
                     }
                   },
                   icon: Icons.keyboard_voice,

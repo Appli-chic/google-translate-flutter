@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_translate/providers/translate_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../components/choose-language.dart';
 import '../components/translate-text.dart';
 import '../components/list-translate.dart';
 import '../components/translate-input.dart';
-import '../models/language.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -17,9 +18,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  bool _isTextTouched = false;
-  Language _firstLanguage = Language('en', 'English', true, true, true);
-  Language _secondLanguage = Language('fr', 'French', true, true, true);
+
+  TranslateProvider _translateProvider;
   FocusNode _textFocusNode = FocusNode();
   AnimationController _controller;
   Animation _animation;
@@ -43,13 +43,6 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
-  _onLanguageChanged(Language firstCode, Language secondCode) {
-    this.setState(() {
-      this._firstLanguage = firstCode;
-      this._secondLanguage = secondCode;
-    });
-  }
-
   // Generate animations to enter the text to translate
   _onTextTouched(bool isTouched) {
     Tween _tween = SizeTween(
@@ -67,13 +60,11 @@ class _HomePageState extends State<HomePage>
       this._controller.reverse();
     }
 
-    this.setState(() {
-      this._isTextTouched = isTouched;
-    });
+    _translateProvider.setIsTranslating(isTouched);
   }
 
   Widget _displaySuggestions() {
-    if (this._isTextTouched) {
+    if (_translateProvider.isTranslating) {
       return Container(
         color: Colors.black.withOpacity(0.4),
       );
@@ -84,11 +75,11 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    _translateProvider = Provider.of<TranslateProvider>(context, listen: true);
+
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(this._isTextTouched
-            ? this._animation.value.height
-            : kToolbarHeight),
+        preferredSize: Size.fromHeight(kToolbarHeight),
         child: AppBar(
           title: Text(widget.title),
           elevation: 0.0,
@@ -96,26 +87,20 @@ class _HomePageState extends State<HomePage>
       ),
       body: Column(
         children: <Widget>[
-          ChooseLanguage(
-            onLanguageChanged: this._onLanguageChanged,
-          ),
+          ChooseLanguage(),
           Stack(
             children: <Widget>[
               Offstage(
-                offstage: this._isTextTouched,
+                offstage: _translateProvider.isTranslating,
                 child: TranslateText(
                   onTextTouched: this._onTextTouched,
-                  firstLanguage: _firstLanguage,
-                  secondLanguage: _secondLanguage,
                 ),
               ),
               Offstage(
-                offstage: !this._isTextTouched,
+                offstage: !_translateProvider.isTranslating,
                 child: TranslateInput(
                   onCloseClicked: this._onTextTouched,
                   focusNode: this._textFocusNode,
-                  firstLanguage: this._firstLanguage,
-                  secondLanguage: this._secondLanguage,
                 ),
               ),
             ],
