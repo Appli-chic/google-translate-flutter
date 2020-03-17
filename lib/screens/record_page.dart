@@ -20,20 +20,58 @@ class RecordPage extends StatefulWidget {
   _RecordPageState createState() => _RecordPageState();
 }
 
-class _RecordPageState extends State<RecordPage> {
-  final _speech = SpeechToText();
+class _RecordPageState extends State<RecordPage> with TickerProviderStateMixin {
+  var _speech = SpeechToText();
+  Timer _timer;
   String _lastWords = "";
+  Animation<double> _animation;
+  Animation<double> _animation2;
+  AnimationController _controller;
+  AnimationController _controller2;
 
   @override
   void initState() {
     super.initState();
     _initSpeechToText();
+
+    _controller =
+        AnimationController(vsync: this, duration: Duration(seconds: 2))
+          ..repeat();
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.linear);
+
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        _controller2 =
+            AnimationController(vsync: this, duration: Duration(seconds: 2))
+              ..repeat();
+        _animation2 =
+            CurvedAnimation(parent: _controller2, curve: Curves.linear);
+      });
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    _speech.stop();
+
+    _timer.cancel();
+    _controller.dispose();
+    _controller2.dispose();
+    _speech.cancel();
+  }
+
+  _startTimer() {
+    if (_timer != null) {
+      _timer.cancel();
+    }
+
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      if (t.tick == 3) {
+        t.cancel();
+        _speech.stop();
+        Navigator.pop(context, _lastWords);
+      }
+    });
   }
 
   Future<void> _initSpeechToText() async {
@@ -41,14 +79,21 @@ class _RecordPageState extends State<RecordPage> {
         onStatus: _statusListener, onError: _errorListener);
 
     if (available) {
+      _startTimer();
       _speech.listen(
-          onResult: _resultListener, localeId: widget.firstLanguage.code);
+        onResult: _resultListener,
+        localeId: widget.firstLanguage.code,
+      );
     } else {
       print("The user has denied the use of speech recognition.");
     }
   }
 
   void _resultListener(SpeechRecognitionResult result) {
+    if (!result.finalResult && _speech.lastStatus != "notListening") {
+      _startTimer();
+    }
+
     setState(() {
       _lastWords = result.recognizedWords;
     });
@@ -62,12 +107,9 @@ class _RecordPageState extends State<RecordPage> {
     print("$status");
   }
 
-  void _startListening() {
-    if (!_speech.isListening) {
-      _lastWords = "";
-      _speech.listen(onResult: _resultListener);
-      setState(() {});
-    }
+  void _stopListening() {
+    _speech.stop();
+    Navigator.pop(context, _lastWords);
   }
 
   @override
@@ -94,7 +136,7 @@ class _RecordPageState extends State<RecordPage> {
               ),
               Container(
                 margin: EdgeInsets.only(bottom: 8),
-                height: 100,
+                height: 180,
                 child: Stack(
                   children: <Widget>[
                     Align(
@@ -112,23 +154,71 @@ class _RecordPageState extends State<RecordPage> {
                     Center(
                       child: Column(
                         children: <Widget>[
-                          ButtonTheme(
-                            minWidth: 70.0,
-                            height: 70.0,
-                            child: RaisedButton(
-                              onPressed: () {
-                                _startListening();
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(40.0),
+                          Stack(
+                            children: <Widget>[
+                              Center(
+                                child: ScaleTransition(
+                                  scale: _animation,
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        width: 3,
+                                        color: Colors.red,
+                                        style: BorderStyle.solid,
+                                      ),
+                                    ),
+                                    height: 140,
+                                    width: 140,
+                                  ),
+                                ),
                               ),
-                              color: Colors.red,
-                              child: Icon(
-                                Icons.mic,
-                                color: Colors.white,
-                                size: 40,
+                              _animation2 != null
+                                  ? Center(
+                                      child: ScaleTransition(
+                                        scale: _animation2,
+                                        alignment: Alignment.center,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              width: 3,
+                                              color: Colors.red,
+                                              style: BorderStyle.solid,
+                                            ),
+                                          ),
+                                          height: 140,
+                                          width: 140,
+                                        ),
+                                      ),
+                                    )
+                                  : Container(),
+                              Center(
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 35),
+                                  child: ButtonTheme(
+                                    minWidth: 70.0,
+                                    height: 70.0,
+                                    child: RaisedButton(
+                                      onPressed: () {
+                                        _stopListening();
+                                      },
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(40.0),
+                                      ),
+                                      color: Colors.red,
+                                      child: Icon(
+                                        Icons.mic,
+                                        color: Colors.white,
+                                        size: 40,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 12),
