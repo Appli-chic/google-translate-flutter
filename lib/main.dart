@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/translate_provider.dart';
-import 'screens/home-page.dart';
+import 'screens/home_page.dart';
 
 void main() => runApp(MyApp());
 

@@ -3,7 +3,7 @@ import 'package:google_translate/providers/translate_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../models/language.dart';
-import '../screens/language-page.dart';
+import '../screens/language_page.dart';
 
 class ChooseLanguage extends StatefulWidget {
   ChooseLanguage({Key key}) : super(key: key);

@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage>
       end: Size(0.0, 0.0),
     );
 
-    this._animation = _tween.animate(this._controller);
+    _animation = _tween.animate(this._controller);
 
     if (isTouched) {
       FocusScope.of(context).requestFocus(this._textFocusNode);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_translate/providers/translate_provider.dart';
+import 'package:google_translate/screens/conversation_page.dart';
 import 'package:google_translate/screens/record_page.dart';
 import 'package:provider/provider.dart';
 
@@ -65,21 +66,31 @@ class _TranslateTextState extends State<TranslateText> {
                 ActionButton(
                   imageIcon: AssetImage("assets/conversation.png"),
                   text: "Conversation",
+                  onClick: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ConversationPage(
+                          firstLanguage: _translateProvider.firstLanguage,
+                          secondLanguage: _translateProvider.secondLanguage,
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 ActionButton(
                   onClick: () async {
                     var result = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            RecordPage(
-                              firstLanguage: _translateProvider.firstLanguage,
-                              secondLanguage: _translateProvider.secondLanguage,
-                            ),
+                        builder: (context) => RecordPage(
+                          firstLanguage: _translateProvider.firstLanguage,
+                          secondLanguage: _translateProvider.secondLanguage,
+                        ),
                       ),
                     );
 
-                    if(result != null && result != "") {
+                    if (result != null && result != "") {
                       _translateProvider.setTextToTranslate(result);
                       _translateProvider.setIsTranslating(true);
                     }
