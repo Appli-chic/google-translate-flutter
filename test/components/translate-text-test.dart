@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:google_translate/components/translate-text.dart';
+import 'package:google_translate/components/translate_text.dart';
 
 void testTranslateText() {
   testWidgets('Test translate text building', (WidgetTester tester) async {

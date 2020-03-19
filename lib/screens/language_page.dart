@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 import '../models/language.dart';
-import '../components/language-list-element.dart';
+import '../components/language_list_element.dart';
 
 class LanguagePage extends StatefulWidget {
   LanguagePage({Key key, this.title, this.isAutomaticEnabled})

@@ -2,35 +2,32 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_translate/components/clips/discussion_left_clip.dart';
-import 'package:google_translate/components/clips/discussion_right_clip.dart';
-import 'package:google_translate/models/language.dart';
+import 'package:translator/translator.dart';
+import 'package:google_translate/components/language_button.dart';
+import 'package:google_translate/providers/translate_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 class ConversationPage extends StatefulWidget {
-  ConversationPage({
-    @required this.firstLanguage,
-    @required this.secondLanguage,
-  });
-
-  final Language firstLanguage;
-  final Language secondLanguage;
-
   @override
   _ConversationPageState createState() => _ConversationPageState();
 }
 
 class _ConversationPageState extends State<ConversationPage>
     with TickerProviderStateMixin {
+  TranslateProvider _translateProvider;
   var _speech = SpeechToText();
   Timer _timer;
+  String _talkNowTextLanguage1 = "";
+  String _talkNowTextLanguage2 = "";
   String _lastWords = "";
   Animation<double> _animation;
   Animation<double> _animation2;
   AnimationController _controller;
   AnimationController _controller2;
+  GoogleTranslator _translator = new GoogleTranslator();
 
   @override
   void initState() {
@@ -85,7 +82,7 @@ class _ConversationPageState extends State<ConversationPage>
       _startTimer();
       _speech.listen(
         onResult: _resultListener,
-        localeId: widget.firstLanguage.code,
+        localeId: _translateProvider.firstLanguage.code,
       );
     } else {
       print("The user has denied the use of speech recognition.");
@@ -110,8 +107,34 @@ class _ConversationPageState extends State<ConversationPage>
     print("$status");
   }
 
+  _initTalkNowText() {
+    _translator
+        .translate("Talk now...",
+            from: 'en', to: _translateProvider.firstLanguage.code)
+        .then((translatedText) {
+      setState(() {
+        _talkNowTextLanguage1 = translatedText;
+      });
+    });
+
+    _translator
+        .translate("Talk now...",
+            from: 'en', to: _translateProvider.secondLanguage.code)
+        .then((translatedText) {
+      setState(() {
+        _talkNowTextLanguage2 = translatedText;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    _translateProvider = Provider.of<TranslateProvider>(context, listen: true);
+
+    if (_talkNowTextLanguage1.isEmpty || _talkNowTextLanguage2.isEmpty) {
+      _initTalkNowText();
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -129,7 +152,7 @@ class _ConversationPageState extends State<ConversationPage>
             child: Container(
               margin: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
               child: Text(
-                "Talk now...",
+                _talkNowTextLanguage1,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -144,7 +167,7 @@ class _ConversationPageState extends State<ConversationPage>
             child: Container(
               margin: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
               child: Text(
-                "Talk now...",
+                _talkNowTextLanguage2,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -153,7 +176,7 @@ class _ConversationPageState extends State<ConversationPage>
             ),
           ),
           Container(
-            margin: EdgeInsets.only(bottom: 8),
+            margin: EdgeInsets.only(bottom: 16),
             child: SizedOverflowBox(
               size: Size.fromHeight(70),
               child: Stack(
@@ -200,20 +223,11 @@ class _ConversationPageState extends State<ConversationPage>
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Expanded(
-                        child: ClipPath(
-                          clipper: DiscussionLeftClip(),
-                          child: Container(
-                            height: 60,
-                            margin: EdgeInsets.only(left: 4, bottom: 5),
-                            decoration: BoxDecoration(
-                              color: Color(0xFFededed),
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(8),
-                                topLeft: Radius.circular(8),
-                              ),
-                              border: Border.all(color: Color(0xFFdadada)),
-                            ),
-                          ),
+                        child: LanguageButton(
+                          language: _translateProvider.firstLanguage.name,
+                          direction: LanguageButtonDirection.left,
+                          isSelected: true,
+                          onTap: () {},
                         ),
                       ),
                       Container(
@@ -236,20 +250,11 @@ class _ConversationPageState extends State<ConversationPage>
                         ),
                       ),
                       Expanded(
-                        child: ClipPath(
-                          clipper: DiscussionRightClip(),
-                          child: Container(
-                            height: 60,
-                            margin: EdgeInsets.only(right: 4, bottom: 5),
-                            decoration: BoxDecoration(
-                              color: Color(0xFFededed),
-                              borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(8),
-                                topRight: Radius.circular(8),
-                              ),
-                              border: Border.all(color: Color(0xFFdadada)),
-                            ),
-                          ),
+                        child: LanguageButton(
+                          language: _translateProvider.secondLanguage.name,
+                          direction: LanguageButtonDirection.right,
+                          isSelected: false,
+                          onTap: () {},
                         ),
                       ),
                     ],

@@ -2,25 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_translate/models/language.dart';
+import 'package:google_translate/providers/translate_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 
 class RecordPage extends StatefulWidget {
-  RecordPage({
-    @required this.firstLanguage,
-    @required this.secondLanguage,
-  });
-
-  final Language firstLanguage;
-  final Language secondLanguage;
-
   @override
   _RecordPageState createState() => _RecordPageState();
 }
 
 class _RecordPageState extends State<RecordPage> with TickerProviderStateMixin {
+  TranslateProvider _translateProvider;
   var _speech = SpeechToText();
   Timer _timer;
   String _lastWords = "";
@@ -82,7 +76,7 @@ class _RecordPageState extends State<RecordPage> with TickerProviderStateMixin {
       _startTimer();
       _speech.listen(
         onResult: _resultListener,
-        localeId: widget.firstLanguage.code,
+        localeId: _translateProvider.firstLanguage.code,
       );
     } else {
       print("The user has denied the use of speech recognition.");
@@ -114,6 +108,8 @@ class _RecordPageState extends State<RecordPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    _translateProvider = Provider.of<TranslateProvider>(context, listen: true);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -223,7 +219,7 @@ class _RecordPageState extends State<RecordPage> with TickerProviderStateMixin {
                           Container(
                             margin: EdgeInsets.only(top: 12),
                             child: Text(
-                              widget.firstLanguage.name,
+                              _translateProvider.firstLanguage.name,
                               style: TextStyle(
                                 color: Colors.black45,
                                 fontSize: 14,

@@ -3,8 +3,6 @@ import 'package:google_translate/providers/translate_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:translator/translator.dart';
 
-import '../models/language.dart';
-
 class TranslateInput extends StatefulWidget {
   TranslateInput(
       {Key key,

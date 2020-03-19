@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:google_translate/components/choose-language.dart';
+import 'package:google_translate/components/choose_language.dart';
 
 void testChooseLanguage() {
   testWidgets('Test choose language building', (WidgetTester tester) async {

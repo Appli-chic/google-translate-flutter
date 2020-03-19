@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_translate/providers/translate_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../components/choose-language.dart';
-import '../components/translate-text.dart';
-import '../components/list-translate.dart';
-import '../components/translate-input.dart';
+import '../components/choose_language.dart';
+import '../components/translate_text.dart';
+import '../components/list_translate.dart';
+import '../components/translate_input.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);

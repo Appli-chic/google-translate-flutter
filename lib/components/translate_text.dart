@@ -4,7 +4,7 @@ import 'package:google_translate/screens/conversation_page.dart';
 import 'package:google_translate/screens/record_page.dart';
 import 'package:provider/provider.dart';
 
-import 'action-button.dart';
+import 'action_button.dart';
 
 class TranslateText extends StatefulWidget {
   TranslateText({
@@ -70,10 +70,7 @@ class _TranslateTextState extends State<TranslateText> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ConversationPage(
-                          firstLanguage: _translateProvider.firstLanguage,
-                          secondLanguage: _translateProvider.secondLanguage,
-                        ),
+                        builder: (context) => ConversationPage(),
                       ),
                     );
                   },
@@ -83,10 +80,7 @@ class _TranslateTextState extends State<TranslateText> {
                     var result = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RecordPage(
-                          firstLanguage: _translateProvider.firstLanguage,
-                          secondLanguage: _translateProvider.secondLanguage,
-                        ),
+                        builder: (context) => RecordPage(),
                       ),
                     );
 
