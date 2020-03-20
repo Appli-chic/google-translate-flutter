@@ -22,12 +22,14 @@ class _ConversationPageState extends State<ConversationPage>
   Timer _timer;
   String _talkNowTextLanguage1 = "";
   String _talkNowTextLanguage2 = "";
-  String _lastWords = "";
+  String _textToTranslate = "";
+  String _textTranslated = "";
   Animation<double> _animation;
   Animation<double> _animation2;
   AnimationController _controller;
   AnimationController _controller2;
   GoogleTranslator _translator = new GoogleTranslator();
+  int _personTalkingIndex = 0;
 
   @override
   void initState() {
@@ -67,9 +69,8 @@ class _ConversationPageState extends State<ConversationPage>
 
     _timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
       if (t.tick == 3) {
-//        t.cancel();
-//        _speech.stop();
-//        Navigator.pop(context, _lastWords);
+        t.cancel();
+        _speech.stop();
       }
     });
   }
@@ -94,8 +95,29 @@ class _ConversationPageState extends State<ConversationPage>
       _startTimer();
     }
 
+    // Translate the text
+    String firstLanguageCode = "";
+    String secondLanguageCode = "";
+
+    if (_personTalkingIndex == 0) {
+      firstLanguageCode = _translateProvider.firstLanguage.code;
+      secondLanguageCode = _translateProvider.secondLanguage.code;
+    } else {
+      firstLanguageCode = _translateProvider.secondLanguage.code;
+      secondLanguageCode = _translateProvider.firstLanguage.code;
+    }
+
+    _translator
+        .translate(result.recognizedWords,
+            from: firstLanguageCode, to: secondLanguageCode)
+        .then((translatedText) {
+      setState(() {
+        _textTranslated = translatedText;
+      });
+    });
+
     setState(() {
-      _lastWords = result.recognizedWords;
+      _textToTranslate = result.recognizedWords;
     });
   }
 
@@ -127,6 +149,42 @@ class _ConversationPageState extends State<ConversationPage>
     });
   }
 
+  String _displaysTextLanguage1() {
+    if (_personTalkingIndex == 0) {
+      if (_textToTranslate.isEmpty) {
+        return _talkNowTextLanguage1;
+      } else {
+        return _textToTranslate;
+      }
+    } else if (_personTalkingIndex == 1) {
+      if (_textTranslated.isEmpty) {
+        return "";
+      } else {
+        return _textTranslated;
+      }
+    } else {
+      return "";
+    }
+  }
+
+  String _displaysTextLanguage2() {
+    if (_personTalkingIndex == 0) {
+      if (_textTranslated.isEmpty) {
+        return "";
+      } else {
+        return _textTranslated;
+      }
+    } else if (_personTalkingIndex == 1) {
+      if (_textToTranslate.isEmpty) {
+        return _talkNowTextLanguage2;
+      } else {
+        return _textToTranslate;
+      }
+    } else {
+      return "";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     _translateProvider = Provider.of<TranslateProvider>(context, listen: true);
@@ -152,7 +210,7 @@ class _ConversationPageState extends State<ConversationPage>
             child: Container(
               margin: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
               child: Text(
-                _talkNowTextLanguage1,
+                _displaysTextLanguage1(),
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -167,7 +225,7 @@ class _ConversationPageState extends State<ConversationPage>
             child: Container(
               margin: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
               child: Text(
-                _talkNowTextLanguage2,
+                _displaysTextLanguage2(),
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
