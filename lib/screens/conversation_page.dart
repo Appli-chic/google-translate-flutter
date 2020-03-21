@@ -68,7 +68,7 @@ class _ConversationPageState extends State<ConversationPage>
     }
 
     _timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
-      if (t.tick == 3) {
+      if (t.tick == 3 && t.isActive) {
         t.cancel();
         _speech.stop();
       }
@@ -88,6 +88,16 @@ class _ConversationPageState extends State<ConversationPage>
     } else {
       print("The user has denied the use of speech recognition.");
     }
+  }
+
+  _stopSpeech() async {
+    _timer.cancel();
+    await _speech.stop();
+
+    setState(() {
+      _textToTranslate = "";
+      _textTranslated = "";
+    });
   }
 
   void _resultListener(SpeechRecognitionResult result) {
@@ -284,8 +294,15 @@ class _ConversationPageState extends State<ConversationPage>
                         child: LanguageButton(
                           language: _translateProvider.firstLanguage.name,
                           direction: LanguageButtonDirection.left,
-                          isSelected: true,
-                          onTap: () {},
+                          isSelected: _personTalkingIndex == 0,
+                          onTap: () async {
+                            await _stopSpeech();
+                            _initSpeechToText();
+
+                            setState(() {
+                              _personTalkingIndex = 0;
+                            });
+                          },
                         ),
                       ),
                       Container(
@@ -311,8 +328,15 @@ class _ConversationPageState extends State<ConversationPage>
                         child: LanguageButton(
                           language: _translateProvider.secondLanguage.name,
                           direction: LanguageButtonDirection.right,
-                          isSelected: false,
-                          onTap: () {},
+                          isSelected: _personTalkingIndex == 1,
+                          onTap: () async {
+                            await _stopSpeech();
+                            _initSpeechToText();
+
+                            setState(() {
+                              _personTalkingIndex = 1;
+                            });
+                          },
                         ),
                       ),
                     ],
