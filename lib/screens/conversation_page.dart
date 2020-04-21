@@ -67,10 +67,26 @@ class _ConversationPageState extends State<ConversationPage>
       _timer.cancel();
     }
 
-    _timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer t) async {
       if (t.tick == 3 && t.isActive) {
         t.cancel();
         _speech.stop();
+
+        if (_personTalkingIndex == 0) {
+          await _stopSpeech();
+          _initSpeechToText();
+
+          setState(() {
+            _personTalkingIndex = 1;
+          });
+        } else if (_personTalkingIndex == 1) {
+          await _stopSpeech();
+          _initSpeechToText();
+
+          setState(() {
+            _personTalkingIndex = 0;
+          });
+        }
       }
     });
   }
@@ -195,6 +211,118 @@ class _ConversationPageState extends State<ConversationPage>
     }
   }
 
+  Widget _displaysButtonWave2() {
+    if (_personTalkingIndex != -1 && _animation2 != null) {
+      return Center(
+        child: ScaleTransition(
+          scale: _animation2,
+          alignment: Alignment.center,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                width: 3,
+                color: Colors.red,
+                style: BorderStyle.solid,
+              ),
+            ),
+            height: 140,
+            width: 140,
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        height: 140,
+        width: 140,
+      );
+    }
+  }
+
+  Widget _displaysButtonWave1() {
+    if (_personTalkingIndex != -1 && _animation != null) {
+      return Center(
+        child: ScaleTransition(
+          scale: _animation,
+          alignment: Alignment.center,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                width: 3,
+                color: Colors.red,
+                style: BorderStyle.solid,
+              ),
+            ),
+            height: 140,
+            width: 140,
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        height: 140,
+        width: 140,
+      );
+    }
+  }
+
+  Widget _displaysRecordingButton() {
+    if (_personTalkingIndex != -1) {
+      return Container(
+        margin: EdgeInsets.only(top: 35),
+        child: ButtonTheme(
+          minWidth: 70.0,
+          height: 70.0,
+          child: RaisedButton(
+            onPressed: () {
+              setState(() {
+                _personTalkingIndex = -1;
+              });
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(40.0),
+            ),
+            color: Colors.red,
+            child: Icon(
+              Icons.mic,
+              color: Colors.white,
+              size: 40,
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        margin: EdgeInsets.only(top: 35),
+        child: ButtonTheme(
+          minWidth: 70.0,
+          height: 70.0,
+          child: RaisedButton(
+            onPressed: () async {
+              await _stopSpeech();
+              _initSpeechToText();
+
+              setState(() {
+                _personTalkingIndex = 0;
+              });
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(40.0),
+            ),
+            elevation: 0,
+            color: Color(0xFFededed),
+            child: Icon(
+              Icons.mic,
+              color: Colors.white,
+              size: 40,
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     _translateProvider = Provider.of<TranslateProvider>(context, listen: true);
@@ -249,44 +377,8 @@ class _ConversationPageState extends State<ConversationPage>
               size: Size.fromHeight(70),
               child: Stack(
                 children: <Widget>[
-                  Center(
-                    child: ScaleTransition(
-                      scale: _animation,
-                      alignment: Alignment.center,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            width: 3,
-                            color: Colors.red,
-                            style: BorderStyle.solid,
-                          ),
-                        ),
-                        height: 140,
-                        width: 140,
-                      ),
-                    ),
-                  ),
-                  _animation2 != null
-                      ? Center(
-                          child: ScaleTransition(
-                            scale: _animation2,
-                            alignment: Alignment.center,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  width: 3,
-                                  color: Colors.red,
-                                  style: BorderStyle.solid,
-                                ),
-                              ),
-                              height: 140,
-                              width: 140,
-                            ),
-                          ),
-                        )
-                      : Container(),
+                  _displaysButtonWave1(),
+                  _displaysButtonWave2(),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
@@ -305,25 +397,7 @@ class _ConversationPageState extends State<ConversationPage>
                           },
                         ),
                       ),
-                      Container(
-                        margin: EdgeInsets.only(top: 35),
-                        child: ButtonTheme(
-                          minWidth: 70.0,
-                          height: 70.0,
-                          child: RaisedButton(
-                            onPressed: () {},
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40.0),
-                            ),
-                            color: Colors.red,
-                            child: Icon(
-                              Icons.mic,
-                              color: Colors.white,
-                              size: 40,
-                            ),
-                          ),
-                        ),
-                      ),
+                      _displaysRecordingButton(),
                       Expanded(
                         child: LanguageButton(
                           language: _translateProvider.secondLanguage.name,
