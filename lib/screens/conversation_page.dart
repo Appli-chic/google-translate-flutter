@@ -69,24 +69,25 @@ class _ConversationPageState extends State<ConversationPage>
 
     _timer = Timer.periodic(Duration(seconds: 1), (Timer t) async {
       if (t.tick == 3 && t.isActive) {
-        t.cancel();
-        _speech.stop();
+        await _stopSpeech();
 
         if (_personTalkingIndex == 0) {
-          await _stopSpeech();
-          _initSpeechToText();
+          await _initSpeechToText();
 
           setState(() {
             _personTalkingIndex = 1;
           });
         } else if (_personTalkingIndex == 1) {
-          await _stopSpeech();
-          _initSpeechToText();
+          await _initSpeechToText();
 
           setState(() {
             _personTalkingIndex = 0;
           });
         }
+      }
+
+      if(t.isActive && _personTalkingIndex != -1 && !_speech.isListening) {
+        await _initSpeechToText();
       }
     });
   }
@@ -128,7 +129,7 @@ class _ConversationPageState extends State<ConversationPage>
     if (_personTalkingIndex == 0) {
       firstLanguageCode = _translateProvider.firstLanguage.code;
       secondLanguageCode = _translateProvider.secondLanguage.code;
-    } else {
+    } else if (_personTalkingIndex == 1) {
       firstLanguageCode = _translateProvider.secondLanguage.code;
       secondLanguageCode = _translateProvider.firstLanguage.code;
     }
@@ -275,7 +276,9 @@ class _ConversationPageState extends State<ConversationPage>
           minWidth: 70.0,
           height: 70.0,
           child: RaisedButton(
-            onPressed: () {
+            onPressed: () async {
+              await _stopSpeech();
+
               setState(() {
                 _personTalkingIndex = -1;
               });
@@ -300,8 +303,7 @@ class _ConversationPageState extends State<ConversationPage>
           height: 70.0,
           child: RaisedButton(
             onPressed: () async {
-              await _stopSpeech();
-              _initSpeechToText();
+              await _initSpeechToText();
 
               setState(() {
                 _personTalkingIndex = 0;
@@ -389,7 +391,7 @@ class _ConversationPageState extends State<ConversationPage>
                           isSelected: _personTalkingIndex == 0,
                           onTap: () async {
                             await _stopSpeech();
-                            _initSpeechToText();
+                            await _initSpeechToText();
 
                             setState(() {
                               _personTalkingIndex = 0;
@@ -405,7 +407,7 @@ class _ConversationPageState extends State<ConversationPage>
                           isSelected: _personTalkingIndex == 1,
                           onTap: () async {
                             await _stopSpeech();
-                            _initSpeechToText();
+                            await _initSpeechToText();
 
                             setState(() {
                               _personTalkingIndex = 1;
