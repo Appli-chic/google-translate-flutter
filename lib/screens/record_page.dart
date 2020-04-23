@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_translate/components/record_button.dart';
 import 'package:google_translate/providers/translate_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -13,45 +14,34 @@ class RecordPage extends StatefulWidget {
   _RecordPageState createState() => _RecordPageState();
 }
 
-class _RecordPageState extends State<RecordPage> with TickerProviderStateMixin {
+class _RecordPageState extends State<RecordPage> {
   TranslateProvider _translateProvider;
   var _speech = SpeechToText();
   Timer _timer;
   String _lastWords = "";
-  Animation<double> _animation;
-  Animation<double> _animation2;
-  AnimationController _controller;
-  AnimationController _controller2;
 
   @override
   void initState() {
     super.initState();
     _initSpeechToText();
+  }
 
-    _controller =
-        AnimationController(vsync: this, duration: Duration(seconds: 2))
-          ..repeat();
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.linear);
+  @override
+  void deactivate() {
+    _timer.cancel();
+    _speech.cancel();
+    _speech.stop();
 
-    Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        _controller2 =
-            AnimationController(vsync: this, duration: Duration(seconds: 2))
-              ..repeat();
-        _animation2 =
-            CurvedAnimation(parent: _controller2, curve: Curves.linear);
-      });
-    });
+    super.deactivate();
   }
 
   @override
   void dispose() {
-    super.dispose();
-
     _timer.cancel();
-    _controller.dispose();
-    _controller2.dispose();
     _speech.cancel();
+    _speech.stop();
+
+    super.dispose();
   }
 
   _startTimer() {
@@ -150,71 +140,11 @@ class _RecordPageState extends State<RecordPage> with TickerProviderStateMixin {
                     Center(
                       child: Column(
                         children: <Widget>[
-                          Stack(
-                            children: <Widget>[
-                              Center(
-                                child: ScaleTransition(
-                                  scale: _animation,
-                                  alignment: Alignment.center,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        width: 3,
-                                        color: Colors.red,
-                                        style: BorderStyle.solid,
-                                      ),
-                                    ),
-                                    height: 140,
-                                    width: 140,
-                                  ),
-                                ),
-                              ),
-                              _animation2 != null
-                                  ? Center(
-                                      child: ScaleTransition(
-                                        scale: _animation2,
-                                        alignment: Alignment.center,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                              width: 3,
-                                              color: Colors.red,
-                                              style: BorderStyle.solid,
-                                            ),
-                                          ),
-                                          height: 140,
-                                          width: 140,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                              Center(
-                                child: Container(
-                                  margin: EdgeInsets.only(top: 35),
-                                  child: ButtonTheme(
-                                    minWidth: 70.0,
-                                    height: 70.0,
-                                    child: RaisedButton(
-                                      onPressed: () {
-                                        _stopListening();
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(40.0),
-                                      ),
-                                      color: Colors.red,
-                                      child: Icon(
-                                        Icons.mic,
-                                        color: Colors.white,
-                                        size: 40,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          RecordButton(
+                            isActive: true,
+                            onClick: (bool isActive) {
+                              _stopListening();
+                            },
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 12),

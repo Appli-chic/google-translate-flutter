@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_translate/components/record_button.dart';
 import 'package:translator/translator.dart';
 import 'package:google_translate/components/language_button.dart';
 import 'package:google_translate/providers/translate_provider.dart';
@@ -15,8 +16,7 @@ class ConversationPage extends StatefulWidget {
   _ConversationPageState createState() => _ConversationPageState();
 }
 
-class _ConversationPageState extends State<ConversationPage>
-    with TickerProviderStateMixin {
+class _ConversationPageState extends State<ConversationPage> {
   TranslateProvider _translateProvider;
   var _speech = SpeechToText();
   Timer _timer;
@@ -24,10 +24,6 @@ class _ConversationPageState extends State<ConversationPage>
   String _talkNowTextLanguage2 = "";
   String _textToTranslate = "";
   String _textTranslated = "";
-  Animation<double> _animation;
-  Animation<double> _animation2;
-  AnimationController _controller;
-  AnimationController _controller2;
   GoogleTranslator _translator = new GoogleTranslator();
   int _personTalkingIndex = 0;
 
@@ -35,40 +31,34 @@ class _ConversationPageState extends State<ConversationPage>
   void initState() {
     super.initState();
     _initSpeechToText();
+  }
 
-    _controller =
-        AnimationController(vsync: this, duration: Duration(seconds: 2))
-          ..repeat();
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.linear);
+  @override
+  void deactivate() {
+    _personTalkingIndex =-1;
+    _timer.cancel();
+    _speech.cancel();
 
-    Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        _controller2 =
-            AnimationController(vsync: this, duration: Duration(seconds: 2))
-              ..repeat();
-        _animation2 =
-            CurvedAnimation(parent: _controller2, curve: Curves.linear);
-      });
-    });
+    super.deactivate();
   }
 
   @override
   void dispose() {
-    super.dispose();
-
+    _personTalkingIndex =-1;
     _timer.cancel();
-    _controller.dispose();
-    _controller2.dispose();
     _speech.cancel();
+
+    super.dispose();
   }
 
-  _startTimer() {
+  _startTimer() async {
     if (_timer != null) {
       _timer.cancel();
     }
 
     _timer = Timer.periodic(Duration(seconds: 1), (Timer t) async {
-      if (t.tick == 3 && t.isActive) {
+      if (t.tick == 4 && t.isActive) {
+        t.cancel();
         await _stopSpeech();
 
         if (_personTalkingIndex == 0) {
@@ -86,7 +76,7 @@ class _ConversationPageState extends State<ConversationPage>
         }
       }
 
-      if(t.isActive && _personTalkingIndex != -1 && !_speech.isListening) {
+      if (t.isActive && _personTalkingIndex != -1 && !_speech.isListening) {
         await _initSpeechToText();
       }
     });
@@ -212,119 +202,6 @@ class _ConversationPageState extends State<ConversationPage>
     }
   }
 
-  Widget _displaysButtonWave2() {
-    if (_personTalkingIndex != -1 && _animation2 != null) {
-      return Center(
-        child: ScaleTransition(
-          scale: _animation2,
-          alignment: Alignment.center,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                width: 3,
-                color: Colors.red,
-                style: BorderStyle.solid,
-              ),
-            ),
-            height: 140,
-            width: 140,
-          ),
-        ),
-      );
-    } else {
-      return Container(
-        height: 140,
-        width: 140,
-      );
-    }
-  }
-
-  Widget _displaysButtonWave1() {
-    if (_personTalkingIndex != -1 && _animation != null) {
-      return Center(
-        child: ScaleTransition(
-          scale: _animation,
-          alignment: Alignment.center,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                width: 3,
-                color: Colors.red,
-                style: BorderStyle.solid,
-              ),
-            ),
-            height: 140,
-            width: 140,
-          ),
-        ),
-      );
-    } else {
-      return Container(
-        height: 140,
-        width: 140,
-      );
-    }
-  }
-
-  Widget _displaysRecordingButton() {
-    if (_personTalkingIndex != -1) {
-      return Container(
-        margin: EdgeInsets.only(top: 35),
-        child: ButtonTheme(
-          minWidth: 70.0,
-          height: 70.0,
-          child: RaisedButton(
-            onPressed: () async {
-              await _stopSpeech();
-
-              setState(() {
-                _personTalkingIndex = -1;
-              });
-            },
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(40.0),
-            ),
-            color: Colors.red,
-            child: Icon(
-              Icons.mic,
-              color: Colors.white,
-              size: 40,
-            ),
-          ),
-        ),
-      );
-    } else {
-      return Container(
-        margin: EdgeInsets.only(top: 35),
-        child: ButtonTheme(
-          minWidth: 70.0,
-          height: 70.0,
-          child: RaisedButton(
-            onPressed: () async {
-              await _initSpeechToText();
-
-              setState(() {
-                _personTalkingIndex = 0;
-              });
-            },
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(40.0),
-            ),
-            elevation: 0,
-            color: Color(0xFFededed),
-            child: Icon(
-              Icons.mic,
-              color: Colors.white,
-              size: 40,
-            ),
-          ),
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     _translateProvider = Provider.of<TranslateProvider>(context, listen: true);
@@ -377,47 +254,53 @@ class _ConversationPageState extends State<ConversationPage>
             margin: EdgeInsets.only(bottom: 16),
             child: SizedOverflowBox(
               size: Size.fromHeight(70),
-              child: Stack(
-                children: <Widget>[
-                  _displaysButtonWave1(),
-                  _displaysButtonWave2(),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Expanded(
-                        child: LanguageButton(
-                          language: _translateProvider.firstLanguage.name,
-                          direction: LanguageButtonDirection.left,
-                          isSelected: _personTalkingIndex == 0,
-                          onTap: () async {
-                            await _stopSpeech();
-                            await _initSpeechToText();
+              child: RecordButton(
+                isActive: _personTalkingIndex != -1,
+                leftWidget: Expanded(
+                  child: LanguageButton(
+                    language: _translateProvider.firstLanguage.name,
+                    direction: LanguageButtonDirection.left,
+                    isSelected: _personTalkingIndex == 0,
+                    onTap: () async {
+                      await _stopSpeech();
+                      await _initSpeechToText();
 
-                            setState(() {
-                              _personTalkingIndex = 0;
-                            });
-                          },
-                        ),
-                      ),
-                      _displaysRecordingButton(),
-                      Expanded(
-                        child: LanguageButton(
-                          language: _translateProvider.secondLanguage.name,
-                          direction: LanguageButtonDirection.right,
-                          isSelected: _personTalkingIndex == 1,
-                          onTap: () async {
-                            await _stopSpeech();
-                            await _initSpeechToText();
-
-                            setState(() {
-                              _personTalkingIndex = 1;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
+                      setState(() {
+                        _personTalkingIndex = 0;
+                      });
+                    },
                   ),
-                ],
+                ),
+                rightWidget: Expanded(
+                  child: LanguageButton(
+                    language: _translateProvider.secondLanguage.name,
+                    direction: LanguageButtonDirection.right,
+                    isSelected: _personTalkingIndex == 1,
+                    onTap: () async {
+                      await _stopSpeech();
+                      await _initSpeechToText();
+
+                      setState(() {
+                        _personTalkingIndex = 1;
+                      });
+                    },
+                  ),
+                ),
+                onClick: (bool isPressed) async {
+                  if (isPressed) {
+                    await _stopSpeech();
+
+                    setState(() {
+                      _personTalkingIndex = -1;
+                    });
+                  } else {
+                    await _initSpeechToText();
+
+                    setState(() {
+                      _personTalkingIndex = 0;
+                    });
+                  }
+                },
               ),
             ),
           ),
