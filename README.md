@@ -24,6 +24,6 @@ Previous article:
 - [ ] Favorite translations
 - [ ] Store the last translations
 
-## 🌐 Web site
+## 🌐 Website
 If you wanna read more of my articles in a web site made in Flutter in which you can try the applications in the website:
 <a href='https://applichic.fr'>Applichic</a>
