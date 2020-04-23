@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:translator/translator.dart';
 
 class TranslateInput extends StatefulWidget {
-  TranslateInput(
-      {Key key,
-      this.onCloseClicked,
-      this.focusNode,})
-      : super(key: key);
+  TranslateInput({
+    Key key,
+    this.onCloseClicked,
+    this.focusNode,
+  }) : super(key: key);
 
   final Function(bool) onCloseClicked;
   final FocusNode focusNode;
@@ -29,8 +29,8 @@ class _TranslateInputState extends State<TranslateInput> {
       _translatingText(text);
     } else {
       _translateProvider.setTextToTranslate("");
-      this.setState(() {
-        this._textTranslated = "";
+      setState(() {
+        _textTranslated = "";
       });
     }
   }
@@ -43,8 +43,8 @@ class _TranslateInputState extends State<TranslateInput> {
               to: _translateProvider.secondLanguage.code)
           .then((translatedText) {
         if (translatedText != _textTranslated) {
-          this.setState(() {
-            this._textTranslated = translatedText;
+          setState(() {
+            _textTranslated = translatedText;
           });
         }
       });
@@ -57,57 +57,70 @@ class _TranslateInputState extends State<TranslateInput> {
     _textEditingController.text = _translateProvider.textToTranslate;
     _translatingText(_textEditingController.text);
 
-    return Container(
-      height: 150.0,
-      color: Colors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(left: 16.0),
-              child: TextField(
-                focusNode: this.widget.focusNode,
-                controller: this._textEditingController,
-                onChanged: this._onTextChanged,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  suffixIcon: RawMaterialButton(
-                    onPressed: () {
-                      if (this._textEditingController.text != "") {
-                        this.setState(() {
-                          _translateProvider.setTextToTranslate("");
-                          this._textEditingController.clear();
-                          this._textTranslated = "";
-                        });
-                      } else {
-                        this.widget.onCloseClicked(false);
-                      }
-                    },
-                    child: new Icon(
-                      Icons.close,
-                      color: Colors.grey,
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: 150.0,
+        maxHeight: 300.0,
+      ),
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(left: 16.0),
+                child: TextField(
+                  focusNode: widget.focusNode,
+                  controller: _textEditingController,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  onChanged:_onTextChanged,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    suffixIcon: Container(
+                      width: 30,
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: RawMaterialButton(
+                          onPressed: () {
+                            if (_textEditingController.text != "") {
+                              setState(() {
+                                _translateProvider.setTextToTranslate("");
+                                _textEditingController.clear();
+                                _textTranslated = "";
+                              });
+                            } else {
+                              widget.onCloseClicked(false);
+                            }
+                          },
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.grey,
+                          ),
+                          shape: CircleBorder(),
+                        ),
+                      ),
                     ),
-                    shape: new CircleBorder(),
                   ),
                 ),
               ),
             ),
-          ),
-          Divider(),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(left: 16.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  this._textTranslated,
-                  style: TextStyle(color: Colors.blue[700]),
+            Divider(),
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(left: 16.0),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    _textTranslated,
+                    style: TextStyle(color: Colors.blue[700]),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

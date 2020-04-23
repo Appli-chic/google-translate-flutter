@@ -18,7 +18,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-
   TranslateProvider _translateProvider;
   FocusNode _textFocusNode = FocusNode();
   AnimationController _controller;
@@ -32,14 +31,14 @@ class _HomePageState extends State<HomePage>
       duration: const Duration(milliseconds: 150),
       vsync: this,
     )..addListener(() {
-        this.setState(() {});
+        setState(() {});
       });
   }
 
   @override
   void dispose() {
-    this._controller.dispose();
-    this._textFocusNode.dispose();
+    _controller.dispose();
+    _textFocusNode.dispose();
     super.dispose();
   }
 
@@ -50,14 +49,14 @@ class _HomePageState extends State<HomePage>
       end: Size(0.0, 0.0),
     );
 
-    _animation = _tween.animate(this._controller);
+    _animation = _tween.animate(_controller);
 
     if (isTouched) {
-      FocusScope.of(context).requestFocus(this._textFocusNode);
-      this._controller.forward();
+      FocusScope.of(context).requestFocus(_textFocusNode);
+      _controller.forward();
     } else {
-      FocusScope.of(context).requestFocus(new FocusNode());
-      this._controller.reverse();
+      FocusScope.of(context).requestFocus(FocusNode());
+      _controller.reverse();
     }
 
     _translateProvider.setIsTranslating(isTouched);
@@ -93,14 +92,14 @@ class _HomePageState extends State<HomePage>
               Offstage(
                 offstage: _translateProvider.isTranslating,
                 child: TranslateText(
-                  onTextTouched: this._onTextTouched,
+                  onTextTouched: _onTextTouched,
                 ),
               ),
               Offstage(
                 offstage: !_translateProvider.isTranslating,
                 child: TranslateInput(
-                  onCloseClicked: this._onTextTouched,
-                  focusNode: this._textFocusNode,
+                  onCloseClicked: _onTextTouched,
+                  focusNode: _textFocusNode,
                 ),
               ),
             ],
@@ -112,7 +111,7 @@ class _HomePageState extends State<HomePage>
                   margin: EdgeInsets.only(top: 8.0),
                   child: ListTranslate(),
                 ),
-                this._displaySuggestions(),
+                _displaySuggestions(),
               ],
             ),
           ),
