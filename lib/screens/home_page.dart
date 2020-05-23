@@ -82,6 +82,7 @@ class _HomePageState extends State<HomePage>
         child: AppBar(
           title: Text(widget.title),
           elevation: 0.0,
+          centerTitle: true,
         ),
       ),
       body: Column(
