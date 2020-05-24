@@ -77,6 +77,7 @@ class _HomePageState extends State<HomePage>
     _translateProvider = Provider.of<TranslateProvider>(context, listen: true);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: AppBar(

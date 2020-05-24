@@ -57,70 +57,65 @@ class _TranslateInputState extends State<TranslateInput> {
     _textEditingController.text = _translateProvider.textToTranslate;
     _translatingText(_textEditingController.text);
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        minHeight: 150.0,
-        maxHeight: 300.0,
-      ),
-      child: Container(
-        color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(left: 16.0),
-                child: TextField(
-                  focusNode: widget.focusNode,
-                  controller: _textEditingController,
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                  onChanged:_onTextChanged,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    suffixIcon: Container(
-                      width: 30,
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        child: RawMaterialButton(
-                          onPressed: () {
-                            if (_textEditingController.text != "") {
-                              setState(() {
-                                _translateProvider.setTextToTranslate("");
-                                _textEditingController.clear();
-                                _textTranslated = "";
-                              });
-                            } else {
-                              widget.onCloseClicked(false);
-                            }
-                          },
-                          child: Icon(
-                            Icons.close,
-                            color: Colors.grey,
-                          ),
-                          shape: CircleBorder(),
+    return Container(
+      height: 300.0,
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 16.0),
+              child: TextField(
+                focusNode: widget.focusNode,
+                controller: _textEditingController,
+                maxLines: null,
+                keyboardType: TextInputType.multiline,
+                onChanged:_onTextChanged,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  suffixIcon: Container(
+                    width: 30,
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: RawMaterialButton(
+                        onPressed: () {
+                          if (_textEditingController.text != "") {
+                            setState(() {
+                              _translateProvider.setTextToTranslate("");
+                              _textEditingController.clear();
+                              _textTranslated = "";
+                            });
+                          } else {
+                            widget.onCloseClicked(false);
+                          }
+                        },
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.grey,
                         ),
+                        shape: CircleBorder(),
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-            Divider(),
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(left: 16.0),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    _textTranslated,
-                    style: TextStyle(color: Colors.blue[700]),
-                  ),
+          ),
+          Divider(),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 16.0),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  _textTranslated,
+                  style: TextStyle(color: Colors.blue[700]),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
