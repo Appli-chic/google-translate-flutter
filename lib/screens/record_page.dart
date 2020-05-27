@@ -92,6 +92,7 @@ class _RecordPageState extends State<RecordPage> {
   }
 
   void _stopListening() {
+    _timer.cancel();
     _speech.stop();
     Navigator.pop(context, _speechText);
   }
