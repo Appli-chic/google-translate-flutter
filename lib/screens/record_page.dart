@@ -18,7 +18,7 @@ class _RecordPageState extends State<RecordPage> {
   TranslateProvider _translateProvider;
   var _speech = SpeechToText();
   Timer _timer;
-  String _lastWords = "";
+  String _speechText = "";
 
   @override
   void initState() {
@@ -53,7 +53,7 @@ class _RecordPageState extends State<RecordPage> {
       if (t.tick == 3) {
         t.cancel();
         _speech.stop();
-        Navigator.pop(context, _lastWords);
+        Navigator.pop(context, _speechText);
       }
     });
   }
@@ -79,7 +79,7 @@ class _RecordPageState extends State<RecordPage> {
     }
 
     setState(() {
-      _lastWords = result.recognizedWords;
+      _speechText = result.recognizedWords;
     });
   }
 
@@ -93,7 +93,7 @@ class _RecordPageState extends State<RecordPage> {
 
   void _stopListening() {
     _speech.stop();
-    Navigator.pop(context, _lastWords);
+    Navigator.pop(context, _speechText);
   }
 
   @override
@@ -106,13 +106,17 @@ class _RecordPageState extends State<RecordPage> {
         value: SystemUiOverlayStyle.dark,
         child: Container(
           margin: EdgeInsets.only(
-              top: kToolbarHeight, left: 16, right: 16, bottom: 16),
+            top: kToolbarHeight,
+            left: 16,
+            right: 16,
+            bottom: 16,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Expanded(
                 child: Text(
-                  _lastWords != '' ? _lastWords : 'Talk now',
+                  _speechText != '' ? _speechText : 'Talk now',
                   style: TextStyle(
                     color: Colors.black54,
                     fontSize: 22,
@@ -133,7 +137,7 @@ class _RecordPageState extends State<RecordPage> {
                           color: Colors.black54,
                         ),
                         onPressed: () {
-                          Navigator.pop(context, _lastWords);
+                          Navigator.pop(context, _speechText);
                         },
                       ),
                     ),
