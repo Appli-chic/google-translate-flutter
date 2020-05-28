@@ -53,26 +53,30 @@ class _RecordButtonState extends State<RecordButton>
     super.dispose();
   }
 
+  Widget _buttonWave(Animation<double> animation) {
+    return Center(
+      child: ScaleTransition(
+        scale: animation,
+        alignment: Alignment.center,
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              width: 3,
+              color: Colors.red,
+              style: BorderStyle.solid,
+            ),
+          ),
+          height: 140,
+          width: 140,
+        ),
+      ),
+    );
+  }
+
   Widget _displaysButtonWave2() {
     if (widget.isActive && _animation2 != null) {
-      return Center(
-        child: ScaleTransition(
-          scale: _animation2,
-          alignment: Alignment.center,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                width: 3,
-                color: Colors.red,
-                style: BorderStyle.solid,
-              ),
-            ),
-            height: 140,
-            width: 140,
-          ),
-        ),
-      );
+      return _buttonWave(_animation2);
     } else {
       return Container(
         height: 140,
@@ -83,24 +87,7 @@ class _RecordButtonState extends State<RecordButton>
 
   Widget _displaysButtonWave1() {
     if (widget.isActive && _animation != null) {
-      return Center(
-        child: ScaleTransition(
-          scale: _animation,
-          alignment: Alignment.center,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                width: 3,
-                color: Colors.red,
-                style: BorderStyle.solid,
-              ),
-            ),
-            height: 140,
-            width: 140,
-          ),
-        ),
-      );
+      return _buttonWave(_animation);
     } else {
       return Container(
         height: 140,
