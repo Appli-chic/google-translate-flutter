@@ -35,7 +35,7 @@ class _ConversationPageState extends State<ConversationPage> {
 
   @override
   void deactivate() {
-    _personTalkingIndex =-1;
+    _personTalkingIndex = -1;
     _timer.cancel();
     _speech.cancel();
 
@@ -44,7 +44,7 @@ class _ConversationPageState extends State<ConversationPage> {
 
   @override
   void dispose() {
-    _personTalkingIndex =-1;
+    _personTalkingIndex = -1;
     _timer.cancel();
     _speech.cancel();
 
@@ -62,17 +62,17 @@ class _ConversationPageState extends State<ConversationPage> {
         await _stopSpeech();
 
         if (_personTalkingIndex == 0) {
-          await _initSpeechToText();
-
           setState(() {
             _personTalkingIndex = 1;
           });
-        } else if (_personTalkingIndex == 1) {
-          await _initSpeechToText();
 
+          await _initSpeechToText();
+        } else if (_personTalkingIndex == 1) {
           setState(() {
             _personTalkingIndex = 0;
           });
+
+          await _initSpeechToText();
         }
       }
 
@@ -90,7 +90,9 @@ class _ConversationPageState extends State<ConversationPage> {
       _startTimer();
       _speech.listen(
         onResult: _resultListener,
-        localeId: _translateProvider.firstLanguage.code,
+        localeId: _personTalkingIndex == 0
+            ? _translateProvider.firstLanguage.code
+            : _translateProvider.secondLanguage.code,
       );
     } else {
       print("The user has denied the use of speech recognition.");
@@ -263,11 +265,11 @@ class _ConversationPageState extends State<ConversationPage> {
                     isSelected: _personTalkingIndex == 0,
                     onTap: () async {
                       await _stopSpeech();
-                      await _initSpeechToText();
-
                       setState(() {
                         _personTalkingIndex = 0;
                       });
+
+                      await _initSpeechToText();
                     },
                   ),
                 ),
@@ -278,27 +280,27 @@ class _ConversationPageState extends State<ConversationPage> {
                     isSelected: _personTalkingIndex == 1,
                     onTap: () async {
                       await _stopSpeech();
-                      await _initSpeechToText();
-
                       setState(() {
                         _personTalkingIndex = 1;
                       });
+
+                      await _initSpeechToText();
                     },
                   ),
                 ),
                 onClick: (bool isPressed) async {
                   if (isPressed) {
-                    await _stopSpeech();
-
                     setState(() {
                       _personTalkingIndex = -1;
                     });
-                  } else {
-                    await _initSpeechToText();
 
+                    await _stopSpeech();
+                  } else {
                     setState(() {
                       _personTalkingIndex = 0;
                     });
+
+                    await _initSpeechToText();
                   }
                 },
               ),
