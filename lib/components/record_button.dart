@@ -110,52 +110,28 @@ class _RecordButtonState extends State<RecordButton>
   }
 
   Widget _displaysRecordingButton() {
-    if (widget.isActive) {
-      return Container(
-        margin: EdgeInsets.only(top: 35),
-        child: ButtonTheme(
-          minWidth: 70.0,
-          height: 70.0,
-          child: RaisedButton(
-            onPressed: () {
-              widget.onClick(true);
-            },
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(40.0),
-            ),
-            color: Colors.red,
-            child: Icon(
-              Icons.mic,
-              color: Colors.white,
-              size: 40,
-            ),
+    return Container(
+      margin: EdgeInsets.only(top: 35),
+      child: ButtonTheme(
+        minWidth: 70.0,
+        height: 70.0,
+        child: RaisedButton(
+          onPressed: () {
+            widget.onClick(widget.isActive);
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40.0),
+          ),
+          elevation: widget.isActive ? null: 0,
+          color: widget.isActive ? Colors.red : Color(0xFFededed),
+          child: Icon(
+            Icons.mic,
+            color: Colors.white,
+            size: 40,
           ),
         ),
-      );
-    } else {
-      return Container(
-        margin: EdgeInsets.only(top: 35),
-        child: ButtonTheme(
-          minWidth: 70.0,
-          height: 70.0,
-          child: RaisedButton(
-            onPressed: () {
-              widget.onClick(false);
-            },
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(40.0),
-            ),
-            elevation: 0,
-            color: Color(0xFFededed),
-            child: Icon(
-              Icons.mic,
-              color: Colors.white,
-              size: 40,
-            ),
-          ),
-        ),
-      );
-    }
+      ),
+    );
   }
 
   @override
